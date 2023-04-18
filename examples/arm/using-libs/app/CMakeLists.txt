@@ -24,7 +24,7 @@ target_link_options(myProgram PRIVATE
   # Genex evaluates if we are using the `Debug` configuration
   $<$<CONFIG:Debug>:--semihosting --redirect ___write=___write_buffered>
   # Create a map file from the target's ELF
-  --map $<TARGET_PROPERTY:NAME>.map
+  --map ${CMAKE_CURRENT_BINARY_DIR}/$<TARGET_PROPERTY:NAME>.map
   # Set the linker script
   --config $<TARGET_PROPERTY:ICF> )
 
@@ -34,6 +34,9 @@ target_link_libraries(myProgram LINK_PUBLIC myMath)
 # Optional: convert the output to .hex format
 include(../../iar-functions.cmake)
 iar_elf_tool_hex(myProgram)
+# Optional: show a resource consumption summary at the end
+iar_linker_summary(myProgram)
+
 
 # Optional: test the project with CTest and IAR C-SPY
 include(../../iar-cspy-arm.cmake)
