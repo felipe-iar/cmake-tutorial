@@ -6,7 +6,7 @@ set(CMAKE_SYSTEM_NAME Generic)
 # `TOOLKIT` variable
 #  Used by find_program() for compiler detection.
 #
-#  When the installation can be found in a default install location, use the target architecture
+#  When the IAR toolchain is installed on a default location, use the target architecture
 #  - examples: arm (*default), riscv, rh850, rl78, rx, stm8, 430, 8051, avr or v850
 #
 #  For *custom* install locations, set it to the TOOLKIT_DIR for the target architecture
