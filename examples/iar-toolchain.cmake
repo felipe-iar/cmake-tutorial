@@ -34,7 +34,7 @@ find_program(CMAKE_CXX_COMPILER
   PATHS ${TOOLKIT}
         "$ENV{PROGRAMFILES}/IAR Systems/*"
         "$ENV{ProgramFiles\(x86\)}/IAR Systems/*"
-        /opt/iarsystems/bx${CMAKE_SYSTEM_PROCESSOR}-
+        /opt/iarsystems/bx${CMAKE_SYSTEM_PROCESSOR}
   PATH_SUFFIXES bin ${CMAKE_SYSTEM_PROCESSOR}/bin
   REQUIRED )
 
