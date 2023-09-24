@@ -32,11 +32,11 @@ target_link_options(myProgram PRIVATE
 target_link_libraries(myProgram LINK_PUBLIC myMath)
 
 # Optional: convert the output to .hex format
-include(../../iar-functions.cmake)
 iar_elf_tool_hex(myProgram)
 
 # Optional: test the project with CTest and IAR C-SPY
-include(../../iar-cspy-arm.cmake)
-iar_cspy_add_test(myProgram test_add 42)
-iar_cspy_add_test(myProgram test_sub 38)
-iar_cspy_add_test(myProgram test_mul 80)
+iar_test_init()
+iar_test_add(myProgram testAdd addResult 42)
+iar_test_add(myProgram testSub subResult 38)
+iar_test_add(myProgram testMul mulResult 80)
+

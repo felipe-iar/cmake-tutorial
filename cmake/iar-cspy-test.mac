@@ -9,13 +9,14 @@ __param testExpected;
 __var _breakID;
 
 execUserSetup() {
-  __var condition;
+  __var action, condition;
 
   __message "-- C-SPY TEST: Loading macros";
 
+  action    = __smessage "messagePass(",testVar,", testExpected)";
   condition = __smessage testVar, "==", testExpected;
   //         __setDataBreak(location, count, condition, cond_type, access, action)
-  _breakID = __setDataBreak(testVar, 0, condition, "TRUE", "W", "messagePass(answer, testExpected)");
+  _breakID = __setDataBreak(testVar, 0, condition, "TRUE", "W", action);
 
   if( !_breakID ) {
     __message "-- C-SPY TEST: Failed to set breakpoint";
