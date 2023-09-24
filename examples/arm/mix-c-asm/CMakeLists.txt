@@ -30,4 +30,4 @@ target_link_options(mix-c-asm PRIVATE
 
 # Optional: test the project with IAR C-SPY
 iar_test_init()
-iar_test_add(mix-c-asm testAnswer answer 42)
+iar_test_add(mix-c-asm testMix answer 42)

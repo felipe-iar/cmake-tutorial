@@ -1,5 +1,5 @@
-#include "myMath.h"
+#include "mathLib.h"
 
 int sub(int a, int b) { 
-	return a - --b; /* bug */ 
+	return a - b;
 }
