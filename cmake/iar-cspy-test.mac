@@ -1,0 +1,37 @@
+/*!
+  \file    cspy-test.mac
+  \brief   C-SPY macros for testing with CTest
+  \version 20230920
+*/
+
+__param testVar;
+__param testExpected;
+__var _breakID;
+
+execUserSetup() {
+  __var condition;
+
+  __message "-- C-SPY TEST: Loading macros";
+
+  condition = __smessage testVar, "==", testExpected;
+  //         __setDataBreak(location, count, condition, cond_type, access, action)
+  _breakID = __setDataBreak(testVar, 0, condition, "TRUE", "W", "messagePass(answer, testExpected)");
+
+  if( !_breakID ) {
+    __message "-- C-SPY TEST: Failed to set breakpoint";
+    execUserExit();
+  }
+}
+
+messagePass(v1, v2) {
+  __message "-- C-SPY TEST: Expected: ", v2, ". Got: ", v1, ". Result: PASS";
+}
+
+messageFail(v1, v2) {
+  __message "-- C-SPY TEST: Expected: ", v2, ". Got: ", v1, ". Result: FAIL";
+}
+
+execUserExit() {
+    __clearBreak( _breakID );
+  __message "-- C-SPY TEST: Unloading macros";
+}
