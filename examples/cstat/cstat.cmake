@@ -22,7 +22,6 @@ function(iar_cstat TARGET)
   # Get the path to the compiler
   cmake_path(GET CMAKE_C_COMPILER PARENT_PATH COMPILER_PATH)
 
-  # Collect source files eligible for C-STAT analysis
   get_target_property(_src_dir ${TARGET} SOURCE_DIR)
   get_target_property(_srcs ${TARGET} SOURCES)
   list(FILTER _srcs INCLUDE REGEX ".*\.(c|cpp|cc|h|hpp)$")
@@ -57,7 +56,7 @@ function(iar_cstat TARGET)
   # Create the C-STAT manifest file
   add_custom_command(TARGET cstat-${TARGET}
                      POST_BUILD
-                     COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --yellow "-- Performing IAR C-STAT Static Analysis..."
+                     COMMAND ${CMAKE_COMMAND} -E echo "-- Performing IAR C-STAT Static Analysis..."
                      COMMAND ${COMPILER_PATH}/ichecks --default ${_stdgroups} --output cstat-${TARGET}.manifest
                      BYPRODUCTS cstat-${TARGET}.manifest
                    )
@@ -68,7 +67,7 @@ function(iar_cstat TARGET)
                        POST_BUILD
                        COMMAND ${COMPILER_PATH}/icstat
                          --checks cstat-${TARGET}.manifest 
-                         --db ${TARGET}.db
+                         --db cstat-${TARGET}.db
                          analyze -- ${CMAKE_C_COMPILER} ${_target_defs} ${_target_hdrs} ${_target_opts} ${_src_dir}/${_src})
   endforeach()
 endfunction()
