@@ -18,42 +18,57 @@ function(iar_cstat TARGET)
   else()
     message(FATAL_ERROR "Invalid parameters for iar_cstat()")
   endif()
+
+  # Get the path to the compiler
   cmake_path(GET CMAKE_C_COMPILER PARENT_PATH COMPILER_PATH)
 
+  # Collect source files eligible for C-STAT analysis
   get_target_property(_src_dir ${TARGET} SOURCE_DIR)
   get_target_property(_srcs ${TARGET} SOURCES)
-  list(FILTER _srcs INCLUDE REGEX ".*\.(c|cpp|cc|h|hxx)$")
+  list(FILTER _srcs INCLUDE REGEX ".*\.(c|cpp|cc|h|hpp)$")
 
+  # Forward target definitions
   get_target_property(_defs ${TARGET} COMPILE_DEFINITIONS)
   if(_defs)
     foreach(_def IN LISTS _defs)
-      string(APPEND _compiler_defs "-D${_def} ")
+      list(APPEND _target_defs "-D${_def}")
     endforeach()
   endif()
 
+  # Forward target header directories
+  get_target_property(_hdrs ${TARGET} INCLUDE_DIRECTORIES)
+  if(_hdrs)
+    foreach(_hdr IN LISTS _hdrs)
+      list(APPEND _target_hdrs "-I${_hdr}")
+    endforeach()
+  endif()
+
+  # Forward target compiler options 
   get_target_property(_opts ${TARGET} COMPILE_OPTIONS)
   if(_opts)
     foreach(_opt IN LISTS _opts)
-      string(APPEND _compiler_opts "${_opt} ")
+      list(APPEND _target_opts "${_opt}")
     endforeach()
   endif()
 
-
+  # Create a custom target, prefixing the actual target name
   add_custom_target(cstat-${TARGET})
 
+  # Create the C-STAT manifest file
   add_custom_command(TARGET cstat-${TARGET}
                      POST_BUILD
                      COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --yellow "-- Performing IAR C-STAT Static Analysis..."
-                     COMMAND ichecks --default ${_stdgroups} --output cstat-${TARGET}.manifest
+                     COMMAND ${COMPILER_PATH}/ichecks --default ${_stdgroups} --output cstat-${TARGET}.manifest
                      BYPRODUCTS cstat-${TARGET}.manifest
                    )
 
+  # Perform `icstat` on the target sources
   foreach(_src IN LISTS _srcs)
     add_custom_command(TARGET cstat-${TARGET}
                        POST_BUILD
                        COMMAND ${COMPILER_PATH}/icstat
                          --checks cstat-${TARGET}.manifest 
                          --db ${TARGET}.db
-                         analyze -- ${CMAKE_C_COMPILER} ${_compiler_defs}${_compiler_opts} ${_src_dir}/${_src})
+                         analyze -- ${CMAKE_C_COMPILER} ${_target_defs} ${_target_hdrs} ${_target_opts} ${_src_dir}/${_src})
   endforeach()
 endfunction()

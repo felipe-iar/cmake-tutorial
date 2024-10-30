@@ -12,13 +12,16 @@ target_sources(analysis PRIVATE
 
 target_compile_definitions(analysis PRIVATE
   A=1
+  B=2
 )
 
-  #  $<$<COMPILE_LANGUAGE:C,CXX>:--no_wrap_diagnostics>
+target_include_directories(analysis PRIVATE
+  inc
+)
+
 target_compile_options(analysis PRIVATE
   --cpu=cortex-m4
 )
-
 
 target_link_options(analysis PRIVATE
   --cpu=cortex-m4
